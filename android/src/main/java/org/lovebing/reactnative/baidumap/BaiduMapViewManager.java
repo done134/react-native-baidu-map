@@ -136,29 +136,31 @@ public class BaiduMapViewManager extends ViewGroupManager<MapView> {
 
     @ReactProp(name="markers")
     public void setMarkers(MapView mapView, ReadableArray options) {
-        String key = "markers_" + mapView.getId();
-        List<Marker> markers = mMarkersMap.get(key);
-        if(markers == null) {
-            markers = new ArrayList<>();
-        }
-        for (int i = 0; i < options.size(); i++) {
-            ReadableMap option = options.getMap(i);
-            if(markers.size() > i + 1 && markers.get(i) != null) {
-                MarkerUtil.updateMaker(markers.get(i), option);
+        if(options!=null){
+            String key = "markers_" + mapView.getId();
+            List<Marker> markers = mMarkersMap.get(key);
+            if(markers == null) {
+                markers = new ArrayList<>();
             }
-            else {
-                markers.add(i, MarkerUtil.addMarker(mapView, option));
+            for (int i = 0; i < options.size(); i++) {
+                ReadableMap option = options.getMap(i);
+                if(markers.size() > i + 1 && markers.get(i) != null) {
+                    MarkerUtil.updateMaker(markers.get(i), option);
+                }
+                else {
+                    markers.add(i, MarkerUtil.addMarker(mapView, option));
+                }
             }
-        }
-        if(options.size() < markers.size()) {
-            int start = markers.size() - 1;
-            int end = options.size();
-            for (int i = start; i >= end; i--) {
-                markers.get(i).remove();
-                markers.remove(i);
+            if(options.size() < markers.size()) {
+                int start = markers.size() - 1;
+                int end = options.size();
+                for (int i = start; i >= end; i--) {
+                    markers.get(i).remove();
+                    markers.remove(i);
+                }
             }
+            mMarkersMap.put(key, markers);
         }
-        mMarkersMap.put(key, markers);
     }
 
     @ReactProp(name = "childrenPoints")
